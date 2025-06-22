@@ -35,3 +35,9 @@ jobs:
       - name: Print secrets
         run: echo "TEMP_SECRET -> ${{ secrets.TEMP_SECRET }}"
 
+      - name: Get time
+        id: get_time
+        run: echo "current_time=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+
+      - name: Print current time
+        run: echo "1つ前のstepの出力 -> ${{ steps.get_time.outputs.current_time }}です。"
