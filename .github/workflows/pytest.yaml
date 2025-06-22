@@ -1,0 +1,43 @@
+name: Run Pytest
+
+on: 
+  pull_request:
+    branches: [main]
+
+jobs:
+  test: 
+    runs-on: ubuntu-latest
+    env:
+      DB_USER: postgres
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: pip install -r requirement.txt
+
+      - name: Run Pytest
+        run: pytest      
+
+      - name: Failre Log
+        if: failure()
+        run: echo "1つ前のstepは失敗しました。"
+
+      - name: Print DB_USER
+        run: echo "DB_USER -> ${DB_USER}"
+
+      - name: Print secrets
+        run: echo "TEMP_SECRET -> ${{ secrets.TEMP_SECRET }}"
+
+      - name: Get time
+        id: get_time
+        run: echo "current_time=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+
+      - name: Print current time
+        run: echo "1つ前のstepの出力 -> ${{ steps.get_time.outputs.current_time }}です。"
